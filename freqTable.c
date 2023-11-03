@@ -1,9 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <fcntl.h>
 #include "freqtable.h"
-
+#include "generateCodes.h"
 int tableIndex(struct row *head, char find) {
     struct row *current = head;
     int index = 0;
@@ -62,8 +61,6 @@ struct row *buildFreqTable(int infile) {
 
     return head;
 }
-
-
 void printTable(struct row *head) {
     struct row *current = head;
     while (current != NULL) {
@@ -73,3 +70,6 @@ void printTable(struct row *head) {
         current = current->next;
     }
 }
+
+
+

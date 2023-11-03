@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include "rowNode.h"
+#include "generateCodes.h"
 
 #ifndef FREQTABLE_H
 #define FREQTABLE_H
