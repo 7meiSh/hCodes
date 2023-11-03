@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <fcntl.h>
 #include "freqtable.h"
 
 int tableIndex(struct row *head, char find) {
@@ -30,17 +32,19 @@ void addRow(struct row *current, char c, int f) {
     current->next = new;
 }
 
-struct row *buildFreqTable(FILE *stream) {
+struct row *buildFreqTable(int infile) {
     struct row *head = NULL; // Initialize the frequency table as an empty list
 
-    int thisChar;
-    while ((thisChar = fgetc(stream)) != EOF) {
+    char thisChar;
+    ssize_t bytesRead;
+
+    while ((bytesRead = read(infile, &thisChar, 1)) > 0) {
         int cIndex = tableIndex(head, thisChar);
 
         if (cIndex == -1) {
             // If the character is not found, add it to the frequency table
             if (head == NULL) {
-                head = (struct row *) calloc(1, sizeof(struct row));
+                head = (struct row *)calloc(1, sizeof(struct row));
                 head->freq = 1;
                 head->charType = thisChar;
             } else {
@@ -58,6 +62,7 @@ struct row *buildFreqTable(FILE *stream) {
 
     return head;
 }
+
 
 void printTable(struct row *head) {
     struct row *current = head;

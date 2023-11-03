@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "rowNode.h"
 #include "huffmanNode.h"
 
