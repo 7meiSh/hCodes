@@ -3,6 +3,7 @@
 #include <fcntl.h>
 #include "freqtable.h"
 #include "generateCodes.h"
+
 int tableIndex(struct row *head, char find) {
     struct row *current = head;
     int index = 0;
@@ -43,7 +44,7 @@ struct row *buildFreqTable(int infile) {
         if (cIndex == -1) {
             // If the character is not found, add it to the frequency table
             if (head == NULL) {
-                head = (struct row *)calloc(1, sizeof(struct row));
+                head = (struct row *) calloc(1, sizeof(struct row));
                 head->freq = 1;
                 head->charType = thisChar;
             } else {
@@ -61,6 +62,7 @@ struct row *buildFreqTable(int infile) {
 
     return head;
 }
+
 void printTable(struct row *head) {
     struct row *current = head;
     while (current != NULL) {

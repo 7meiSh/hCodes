@@ -43,8 +43,15 @@ struct row *createMinHeap(struct row *head) {
                 while (current->next != NULL && node->freq >= current->next->freq) {
                     current = current->next;
                 }
-                node->next = current->next;
-                current->next = node;
+                if(current->next != NULL && node->freq >= current->next->freq){
+                    struct row* temp = current->next;
+                    current->next = node;
+                    node->next = temp;
+                }
+                else {
+                    node->next = current->next;
+                    current->next = node;
+                }
             }
         }
     }

@@ -1,16 +1,17 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include "encoderrrr.h"
+#include "encodER.h"
 #include "freqTable.h"
 #include "buildTree.h"
 #include "rowNode.h"
 #include "huffmanNode.h"
 #include "generateCodes.h"
+#include "decodER.h"
 
 #define MAX_PATH_LENGTH 255
 
-int encode(int argc, char *argv[]) {
+int encodeToFile(int argc, char *argv[]) {
     if (argc < 2) {
         fprintf(stderr, "Usage: %s <input_file> [output_file]\n", argv[0]);
         return 1;
@@ -49,7 +50,7 @@ int encode(int argc, char *argv[]) {
 
     /* Creating the space for the code table
      * then creating an empty array of -1 to store the path */
-    struct huff *codeTable = (struct huff *)calloc(1, sizeof(struct huff));
+    struct huff *codeTable = (struct huff *) calloc(1, sizeof(struct huff));
     int path[MAX_PATH_LENGTH];
     int i = 0;
     while (i <= MAX_PATH_LENGTH) {
@@ -61,15 +62,15 @@ int encode(int argc, char *argv[]) {
     generateHuffmanCodes(codes, 0, path, codeTable);
     struct huff *temp = codeTable;
     codeTable = codeTable->next;
-    printCodes(charHeap(codeTable));
+    //printCodes(charHeap(codeTable));
     generateFileBody(infile, outfile, codeTable);
-
+    close(infile);
     /* Teardown */
     free(temp);
-    free(pQueue);
+    //free(pQueue);
     free(codes);
     free(codeTable);
-    close(infile);
+
     close(outfile);
     return 0;
 }

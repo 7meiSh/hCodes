@@ -5,7 +5,7 @@
 #include "rowNode.h"
 #include "huffmanNode.h"
 #include "generateCodes.h"
-#include "encoderrrr.h"
+#include "encodER.h"
 
 void sendFreqToFile(struct row *head, int outfile) {
     // Count the number of unique characters in the frequency table
@@ -17,7 +17,7 @@ void sendFreqToFile(struct row *head, int outfile) {
     }
 
     // Write the number of unique characters minus one to the output file
-    char numMinusOne = (char)(numUniqueChars - 1);
+    char numMinusOne = (char) (numUniqueChars - 1);
     write(outfile, &numMinusOne, 1);
 
 
@@ -30,7 +30,7 @@ void sendFreqToFile(struct row *head, int outfile) {
         int frequency = current->freq;
         int i = 0;
         while (i < 4) {
-            char byte = (char)(frequency & 0xFF);
+            char byte = (char) (frequency & 0xFF);
             write(outfile, &byte, 1);
             frequency >>= 8;
             i++;
@@ -49,7 +49,7 @@ void writeBit(int outfile, int bit, int *bitBuffer, int *bitCount) {
 
     // If the bit buffer is full (8 bits), write it to the output file
     if (*bitCount == 8) {
-        char byte = (char)(*bitBuffer);
+        char byte = (char) (*bitBuffer);
         write(outfile, &byte, 1);
         *bitBuffer = 0;
         *bitCount = 0;
@@ -60,6 +60,9 @@ void generateFileBody(int infile, int outfile, struct huff *codeTable) {
     int bitBuffer = 0;
     int bitCount = 0;
     char charType;
+
+    // Rewind the input file to the beginning
+    lseek(infile, 0, SEEK_SET);
 
     while (read(infile, &charType, sizeof(charType)) == sizeof(charType)) {
         struct huff *code = codeTable;
@@ -78,6 +81,11 @@ void generateFileBody(int infile, int outfile, struct huff *codeTable) {
                 writeBit(outfile, bit, &bitBuffer, &bitCount);
                 i++;
             }
+        } else {
+            // If the character is not found in the codeTable, handle this case
+            // appropriately, e.g., return an error or take appropriate action.
+            // For the sake of this example, I'll print an error message.
+            fprintf(stderr, "Character not found in codeTable: %c\n", charType);
         }
     }
 
@@ -86,4 +94,6 @@ void generateFileBody(int infile, int outfile, struct huff *codeTable) {
         writeBit(outfile, 0, &bitBuffer, &bitCount);
     }
 }
+
+
 
