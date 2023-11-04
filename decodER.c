@@ -87,13 +87,13 @@ void cleanList(struct row* head) {
 int decodeParser(int infile, int outfile) {
     // Create the tree
     struct row* freq = rebuildFreqTable(infile);
-    cleanList(freq);
+    //cleanList(freq);
     struct row* prioQueue = createMinHeap(freq);
     cleanList(prioQueue);
-    struct row* tree = buildHuffman(freq);
+    struct row* tree = buildHuffman(prioQueue);
 
     // Set the file pointer to the beginning of the file
-    if (lseek(infile, 0, SEEK_SET) == -1) {
+    if (lseek(infile, 1, SEEK_SET) == -1) {
         perror("Error setting the file pointer to the beginning of the input file");
         close(outfile); // Close the output file first
         close(infile);

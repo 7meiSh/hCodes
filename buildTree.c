@@ -70,27 +70,51 @@ struct row *kill(struct row *root) {
     root = createMinHeap(root); // Recreate the min-heap
     return root;
 }
+struct row *insert(struct row *root, struct row *newNode) {
+    if (newNode == NULL) {
+        // Handle invalid input
+        fprintf(stderr, "Cannot insert a NULL row into the priority queue.\n");
+        return root;
+    }
+
+    // If the root is empty or the new row's frequency is smaller than the root's frequency,
+    // make the new row the new root.
+    if (root == NULL || newNode->freq < root->freq) {
+        newNode->next = root;
+        return newNode;
+    }
+
+    // Otherwise, find the appropriate position to insert the new row
+    struct row *current = root;
+    struct row *prev = NULL;
+    while (current != NULL && newNode->freq >= current->freq) {
+        prev = current;
+        current = current->next;
+    }
+
+    // Insert the new row between prev and current
+    prev->next = newNode;
+    newNode->next = current;
+
+    return root;
+}
 
 struct row *buildHuffman(struct row *minChar) {
-    while (minChar->next != NULL) {//until the end of the queue
-        struct row *parent = (struct row *) calloc(1, sizeof(struct row));//empty node to manipulate
 
-        //grab the two smallest characters
+    //grab the first two
+    while(minChar->next!=NULL) {
         struct row *left = duplicate(minChar);
         minChar = kill(minChar);
         struct row *right = duplicate(minChar);
         minChar = kill(minChar);
 
-        //sum the frequencies and fill the parent
-        parent->freq = left->freq + right->freq;
+        //create a parents with children are left and right
+        struct row* parent = (struct row *)calloc(1, sizeof(struct row));
+        parent->freq = left->freq+right->freq;
         parent->left = left;
         parent->right = right;
-        if (minChar != NULL) {//as long as the queue still has things in it
-            parent->next = minChar;//put the parent somewhere in the queue it doesn't matter where
-            minChar = createMinHeap(parent);//re-sort
-        } else {
-            minChar = parent;//if its empty you're done
-        }
+        parent->charType = '\0';//to indicate that this is not a leaf;
+        minChar = insert(minChar, parent);
     }
     return minChar;
 }
